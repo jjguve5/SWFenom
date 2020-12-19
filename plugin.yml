@@ -1,0 +1,6 @@
+name: SkywarsFenomMC
+main: pt.feromonas.skywars.Main
+version: 1.0
+commands:
+  sw:
+    description: Aviso para o pessoal da descrição do plugin
