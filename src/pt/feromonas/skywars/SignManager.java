@@ -1,9 +1,11 @@
 package pt.feromonas.skywars;
 
+import java.util.HashMap;
+
 import org.bukkit.block.Sign;
 
 public class SignManager {
-	public Sign[] signs;
+	public HashMap<Sign, SignObject> signs = new HashMap<Sign, SignObject>();
 	
 	SignManager(){
 		//TODO:get all signs from signs.yml 

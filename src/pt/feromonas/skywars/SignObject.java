@@ -1,5 +1,5 @@
 package pt.feromonas.skywars;
 
-public class Arena {
+public class SignObject {
 	
 }

@@ -3,6 +3,7 @@ package pt.feromonas.skywars;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -13,8 +14,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -27,6 +30,7 @@ public class Main extends JavaPlugin implements Listener{
 	String prefix = "[FenomSkyWars]";
 	private ArenaManager arenaM;
 	private SignManager signM;
+	private SettingsManager settings;
 	
 	@Override
 	public void onEnable() {
@@ -34,6 +38,10 @@ public class Main extends JavaPlugin implements Listener{
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		arenaM=new ArenaManager(100);
 		signM=new SignManager();
+		settings = new SettingsManager(this, "signs");
+		settings.setupFile();
+		settings.saveFile();
+		settings.reloadFile();
 	}
 	
 	public void onDisable() {
@@ -72,18 +80,32 @@ public class Main extends JavaPlugin implements Listener{
 		if(ev.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if(block.getType() == Material.SIGN || block.getType() == Material.SIGN_POST || block.getType() == Material.WALL_SIGN) {
                 Sign sign = (Sign) ev.getClickedBlock().getState();
-				int index=-1;
-				for(int i=0;i<signM.signs.length;i++) {
-					if(signM.signs[i]==sign) {
-						index=i;
-					}
-				}
-				if(index==-1) {
-					ev.getPlayer().sendMessage("Mapa não encontrado, tente denovo!");
-					return;
-				}
+                if(!sign.getLine(0).equals("§lSkywars"))
+                	return;
+                SignObject clickedSignObject = signM.signs.get(sign);
+                if(clickedSignObject == null) {
+                	ev.getPlayer().sendMessage("Arena não encontrada!");
+                	return;
+                }
             }
         }
+	}
+	
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent ev) {
+		Location location = new Location(ev.getPlayer().getWorld(),-2,186,5);
+		ev.getPlayer().teleport(location);
+	}
+	
+	@EventHandler
+	public void onSignEdit(SignChangeEvent ev) {
+        if(!ev.getLine(0).equals("sw") || !ev.getPlayer().hasPermission("skywars.sign.create"))
+        	return;
+        ev.setLine(0, "§lSkywars");
+        ev.setLine(1, "§2Esperando");
+        ev.setLine(2, "§nMapa:Algas");
+        ev.setLine(3, "§82/14");
+        ev.getPlayer().sendMessage("Placa Adicionada!");
 	}
 	
 	
