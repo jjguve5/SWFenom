@@ -33,7 +33,7 @@ public class Main extends JavaPlugin implements Listener{
 	public void onEnable() {
 		System.out.print(prefix+" Foi ativado");
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
-		arenaM=new ArenaManager(100);
+		arenaM=new ArenaManager(100,20);
 		signM=new SignManager(arenaM);
 		settings = new SettingsManager(this, "signs");
 		settings.setupFile();

@@ -21,7 +21,7 @@ public class SignManager {
 	
 	public void addSign(Sign s, Player p) {
 		//TODO: add the sign to the signs.yml and sings array
-		updateSign(s,0);
+		updateSign(s);
 		Game g = arenaM.getRandomFreeGame();
 		p.sendMessage("Placa Adicionada!");
 		if(g==null) {
@@ -29,15 +29,28 @@ public class SignManager {
 		}
 		SignObject obj = new SignObject(g);
 		signs.put(s,obj);
-		updateSign(s,1);
+		updateSign(s);
 	}
 	
 	public void removeSign(Sign s) {
 		//TODO: remove the sign from signs.yml and sings array
+		signs.remove(s);
 	}
 	
-	public void updateSign(Sign s, int state) {
+	public void updateSign(Sign s) {
+		int state;
 		SignObject signObject = signs.get(s);
+		if(signObject.game==null) {
+			state=0;
+		} else if(signObject.game.getMaxPlayers()==signObject.game.getAliveCount()) {
+			state=4;
+		} else if(signObject.game.getState()==1) {
+			state=2;
+		}  else if(signObject.game.getState()==2) {
+			state=3;
+		} else {
+			state=1;
+		}
 		Block blockatached = getAttachedBlock((Block)s.getBlock());
 		switch(state) {
 		case 0:

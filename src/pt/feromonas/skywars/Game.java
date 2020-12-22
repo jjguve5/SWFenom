@@ -12,7 +12,7 @@ public class Game {
 	private SWPlayer[] players;
 	private Cage[] cages;
 	
-	Game(int arenaID, int maxPlayers, int minPlayers) {
+	Game(Arena a) {
 		
 	}
 	
@@ -26,25 +26,17 @@ public class Game {
 			for(int i = 0;i<p.getParty().playersArray.length;i++){
 				players = (SWPlayer[]) ArrayUtils.add(players, p.getParty().playersArray[i]);
 				Location location = new Location(p.getParty().playersArray[i].player.getWorld(),0,69,0);
-                ArrayUtils.add(players, p.getParty().playersArray[i].player.teleport(location));
+				p.getParty().playersArray[i].player.teleport(location));
+                players.add(p.getParty().playersArray[i].player);
 			}
 		}
-		players = (SWPlayer[]) ArrayUtils.add(players, p);
+		players.add(p);
 		Location location = new Location(p.player.getWorld(),0,69,0);
 		p.player.teleport(location);
 	}
 	
 	public void removePlayer(SWPlayer p) {
-		int index=-1;
-		for(int i=0;i<players.length;i++) {
-			if(players[i]==p) {
-				index=i;
-			}
-		}
-		if(index!=-1) {
-			ArrayUtils.remove(players, index);
-		}
-		
+		players.remove(p);
 	}
 	
 	public void changeState(int newState) {
