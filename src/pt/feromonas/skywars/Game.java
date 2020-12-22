@@ -8,6 +8,7 @@ public class Game {
 	private int arenaID;
 	private int maxPlayers;
 	private int minPlayers;
+	private String printableName;
 	private SWPlayer[] players;
 	private Cage[] cages;
 	
@@ -72,5 +73,13 @@ public class Game {
 	
 	public int getState() {
 		return state;
+	}
+	
+	public String getPrintableName() {
+		return printableName;
+	}
+	
+	public int getMaxPlayers() {
+		return maxPlayers;
 	}
 }

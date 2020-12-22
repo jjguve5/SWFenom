@@ -12,6 +12,10 @@ public class ArenaManager {
 		
 	}
 	
+	public Game getRandomFreeGame(){
+		return null;
+	}
+	
 	public void removeArena() {
 		
 	}

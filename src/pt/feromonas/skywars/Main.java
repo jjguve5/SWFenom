@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -14,15 +14,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.Attachable;
-import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin implements Listener{
@@ -37,7 +34,7 @@ public class Main extends JavaPlugin implements Listener{
 		System.out.print(prefix+" Foi ativado");
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		arenaM=new ArenaManager(100);
-		signM=new SignManager();
+		signM=new SignManager(arenaM);
 		settings = new SettingsManager(this, "signs");
 		settings.setupFile();
 		settings.saveFile();
@@ -80,11 +77,16 @@ public class Main extends JavaPlugin implements Listener{
 		if(ev.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if(block.getType() == Material.SIGN || block.getType() == Material.SIGN_POST || block.getType() == Material.WALL_SIGN) {
                 Sign sign = (Sign) ev.getClickedBlock().getState();
+                if(sign.getLine(0).equals("sw") && ev.getPlayer().hasPermission("skywars.sign.create")) {
+                	signM.addSign(sign, ev.getPlayer());
+                	return;
+                }
                 if(!sign.getLine(0).equals("§lSkywars"))
                 	return;
                 SignObject clickedSignObject = signM.signs.get(sign);
                 if(clickedSignObject == null) {
                 	ev.getPlayer().sendMessage("Arena não encontrada!");
+                	ev.getPlayer().getWorld().playSound(ev.getPlayer().getLocation(), Sound.ENTITY_GHAST_HURT, 1, 1);
                 	return;
                 }
             }
@@ -96,28 +98,6 @@ public class Main extends JavaPlugin implements Listener{
 		Location location = new Location(ev.getPlayer().getWorld(),-2,186,5);
 		ev.getPlayer().teleport(location);
 	}
-	
-	@EventHandler
-	public void onSignEdit(SignChangeEvent ev) {
-        if(!ev.getLine(0).equals("sw") || !ev.getPlayer().hasPermission("skywars.sign.create"))
-        	return;
-        ev.setLine(0, "§lSkywars");
-        ev.setLine(1, "§2Esperando");
-        ev.setLine(2, "§nMapa:Algas");
-        ev.setLine(3, "§82/14");
-        ev.getPlayer().sendMessage("Placa Adicionada!");
-	}
-	
-	
-	public static Block getAttachedBlock(Block b) {
-        MaterialData m = b.getState().getData();
-        BlockFace face = BlockFace.DOWN;
-        if (m instanceof Attachable) {
-            face = ((Attachable) m).getAttachedFace();
-        }
-        return b.getRelative(face);
-    }
-	
 	
 	public void createMenu(Player player) {
 		Inventory inv = Bukkit.getServer().createInventory(null, 9*5, "Swag Inventory");
