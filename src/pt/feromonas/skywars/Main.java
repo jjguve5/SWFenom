@@ -1,6 +1,7 @@
 package pt.feromonas.skywars;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,8 +27,9 @@ public class Main extends JavaPlugin implements Listener{
 	
 	String prefix = "[FenomSkyWars]";
 	private ArenaManager arenaM;
-	private SignManager signM;
+	public static SignManager signM;
 	private SettingsManager settings;
+	public HashMap<Player, SWPlayer> players = new HashMap<Player, SWPlayer>();
 	
 	@Override
 	public void onEnable() {
@@ -43,6 +45,7 @@ public class Main extends JavaPlugin implements Listener{
 	
 	public void onDisable() {
 		System.out.print(prefix+" Foi desativado");
+		
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
@@ -51,6 +54,19 @@ public class Main extends JavaPlugin implements Listener{
 		
 		if(commandLabel.equalsIgnoreCase("sw")) {
 			createMenu(player);
+		}
+		if(commandLabel.equalsIgnoreCase("swgetactivearenas")) {
+			player.sendMessage("As arenas ativas são:");
+			for(Game game : arenaM.games) {
+				player.sendMessage(game.getPrintableName());
+			}
+		}
+		if(commandLabel.equalsIgnoreCase("swleave")) {
+			if(players.get(sender).game==null) {
+				player.sendMessage("Você não está em um jogo!");
+				return false;
+			}
+			players.get(sender).game.removePlayer(players.get(sender));
 		}
 		
 		return false;
@@ -81,7 +97,7 @@ public class Main extends JavaPlugin implements Listener{
                 	signM.addSign(sign, ev.getPlayer());
                 	return;
                 }
-                if(!sign.getLine(0).equals("§lSkywars"))
+                if(!sign.getLine(0).equals("§lSkyWars"))
                 	return;
                 SignObject clickedSignObject = signM.signs.get(sign);
                 if(clickedSignObject == null) {
@@ -89,6 +105,9 @@ public class Main extends JavaPlugin implements Listener{
                 	ev.getPlayer().getWorld().playSound(ev.getPlayer().getLocation(), Sound.ENTITY_GHAST_HURT, 1, 1);
                 	return;
                 }
+                SWPlayer swp = players.get(ev.getPlayer());
+                clickedSignObject.game.addPlayer(swp);
+                signM.updateSign(sign);
             }
         }
 	}
@@ -97,6 +116,8 @@ public class Main extends JavaPlugin implements Listener{
 	public void onPlayerJoin(PlayerJoinEvent ev) {
 		Location location = new Location(ev.getPlayer().getWorld(),-2,186,5);
 		ev.getPlayer().teleport(location);
+		SWPlayer swp = new SWPlayer(ev.getPlayer());
+		players.put(ev.getPlayer(),swp);
 	}
 	
 	public void createMenu(Player player) {

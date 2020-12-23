@@ -4,3 +4,7 @@ version: 1.0
 commands:
   sw:
     description: Aviso para o pessoal da descrição do plugin
+  swgetactivearenas:
+    description: Obter os nomes das arenas ativas
+  swleave:
+    description: Sair de uma partida de skywars

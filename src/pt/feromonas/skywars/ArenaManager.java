@@ -14,6 +14,16 @@ public class ArenaManager {
 		maxArenas = max;
 		minArenas = min;
 		//TODO:get arenas from config
+		Arena arenatest = new Arena(1,12,2,"Algas");
+		arenas.add(arenatest);
+		arenatest = new Arena(1,12,2,"Lago");
+		arenas.add(arenatest);
+		arenatest = new Arena(1,5,2,"Hawaii");
+		arenas.add(arenatest);
+		arenatest = new Arena(1,8,2,"Feriado");
+		arenas.add(arenatest);
+		arenatest = new Arena(1,24,2,"Piscina");
+		arenas.add(arenatest);
 		for(int i=0;i<minArenas;i++) {
 			addGame();
 		}
@@ -26,7 +36,7 @@ public class ArenaManager {
 	}
 	
 	public Game getRandomFreeGame(){
-		return null;
+		return games.get(new Random().nextInt(games.size()));
 	}
 	
 	public void removeGame(Game g) {

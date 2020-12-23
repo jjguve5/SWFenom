@@ -8,6 +8,12 @@ public class SWPlayer {
 	public Player player;
 	public boolean isAlive;
 	private Party party;
+	public Game game;
+	
+	SWPlayer(Player p){
+		player=p;
+		isAlive=true;
+	}
 	
 	public Party getParty() {
 		return party;

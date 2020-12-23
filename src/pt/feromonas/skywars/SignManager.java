@@ -2,6 +2,7 @@ package pt.feromonas.skywars;
 
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -23,10 +24,12 @@ public class SignManager {
 		//TODO: add the sign to the signs.yml and sings array
 		updateSign(s);
 		Game g = arenaM.getRandomFreeGame();
-		p.sendMessage("Placa Adicionada!");
 		if(g==null) {
 			//TODO: if no game is found search again in x seconds
+			p.sendMessage("Nenhum jogo disponivel!");
 		}
+		g.signs.add(s);
+		p.sendMessage("Placa Adicionada!");
 		SignObject obj = new SignObject(g);
 		signs.put(s,obj);
 		updateSign(s);
@@ -40,7 +43,7 @@ public class SignManager {
 	public void updateSign(Sign s) {
 		int state;
 		SignObject signObject = signs.get(s);
-		if(signObject.game==null) {
+		if( signObject==null ||signObject.game==null) {
 			state=0;
 		} else if(signObject.game.getMaxPlayers()==signObject.game.getAliveCount()) {
 			state=4;
@@ -62,9 +65,7 @@ public class SignManager {
 	        blockatached.setType(Material.STAINED_GLASS);
 	        break;
 		case 1:
-            if(signObject.game == null)
-            	return;
-			s.setLine(0, "§lSkywars");
+			s.setLine(0, "§lSkyWars");
 	        s.setLine(1, "§2Esperando");
 	        s.setLine(2, "§nMapa:"+signObject.game.getPrintableName());
 	        s.setLine(3, "§8"+signObject.game.getAliveCount()+"/"+signObject.game.getMaxPlayers());
@@ -73,9 +74,7 @@ public class SignManager {
 	        blockatached.setData((byte)5);
 	        break;
 		case 2:
-            if(signObject.game == null)
-            	return;
-			s.setLine(0, "§lSkywars");
+			s.setLine(0, "§lSkyWars");
 	        s.setLine(1, "§6Começando");
 	        s.setLine(2, "§nMapa:"+signObject.game.getPrintableName());
 	        s.setLine(3, "§8"+signObject.game.getAliveCount()+"/"+signObject.game.getMaxPlayers());
@@ -84,9 +83,7 @@ public class SignManager {
 	        blockatached.setData((byte)4);
 	        break;
 		case 3:
-            if(signObject.game == null)
-            	return;
-			s.setLine(0, "§lSkywars");
+			s.setLine(0, "§lSkyWars");
 	        s.setLine(1, "§4Começou");
 	        s.setLine(2, "§nMapa:"+signObject.game.getPrintableName());
 	        s.setLine(3, "§8"+signObject.game.getAliveCount()+"/"+signObject.game.getMaxPlayers());
@@ -95,9 +92,7 @@ public class SignManager {
 	        blockatached.setData((byte)14);
 	        break;
 		case 4:
-            if(signObject.game == null)
-            	return;
-			s.setLine(0, "§lSkywars");
+			s.setLine(0, "§lSkyWars");
 	        s.setLine(1, "§5Cheio");
 	        s.setLine(2, "§nMapa:"+signObject.game.getPrintableName());
 	        s.setLine(3, "§8"+signObject.game.getAliveCount()+"/"+signObject.game.getMaxPlayers());
