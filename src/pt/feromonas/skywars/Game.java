@@ -3,8 +3,15 @@ package pt.feromonas.skywars;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 
 public class Game {
@@ -57,9 +64,30 @@ public class Game {
 			}
 		}
 		p.game=this;
+		ScoreboardManager manager = Bukkit.getScoreboardManager();
+        final Scoreboard board = manager.getNewScoreboard();
+        final Objective objective = board.registerNewObjective("test", "dummy");        
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        objective.setDisplayName("§e§lSkyWars");
+        Score score = objective.getScore("§5Mapa:");
+        score.setScore(7);            
+        Score score1 = objective.getScore("§a"+printableName);
+        score1.setScore(6);    
+        Score scoreempty1 = objective.getScore("");
+        scoreempty1.setScore(5);
+        Score score2 = objective.getScore("§5Jogadores:");
+        score2.setScore(4);                        
+        Score score3 = objective.getScore("§a"+getAliveCount()+"/"+maxPlayers);
+        score3.setScore(3);        
+        p.player.setScoreboard(board);
+        Score scoreempty2 = objective.getScore("");
+        scoreempty2.setScore(2);
+        Score score4 = objective.getScore("§6feromonas.pt");
+        score4.setScore(1);
 	}
 	
 	public void removePlayer(SWPlayer p) {
+		p.player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
 		players.remove(p);
 		p.isAlive=true;
 		Location location = new Location(p.player.getWorld(),24,185,1);
